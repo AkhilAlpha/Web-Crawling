@@ -1,51 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[3]:
-
-
-import requests
-from bs4 import BeautifulSoup
-import time
-import csv
-
-query = "site:youtube.com openinapp.co"
-url = f"https://www.google.com/search?q={query}&num=10000"
-
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-}
-
-response = requests.get(url, headers=headers)
-soup = BeautifulSoup(response.content, "html.parser")
-
-results = soup.find_all("div", class_="ZINbbc xpd O9g5cc uUPGi")
-
-channels = []
-
-for result in results:
-    link = result.find("a")
-    if link:
-        href = link["href"]
-        if "youtube.com/channel/" in href:
-            channels.append(href)
-
-    # Add a delay between requests to avoid being detected as a bot
-    time.sleep(1)
-
-# Write the channels to a CSV file
-with open("channels.csv", "w", newline="") as file:
-    writer = csv.writer(file)
-    writer.writerow(["Channel"])
-    for channel in channels:
-        writer.writerow([channel])
-
-print(f"Found {len(channels)} channels and saved to channels.csv")
-
-
-# In[11]:
-
-
 import csv
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -114,10 +66,3 @@ if channels:
     print(f"Found {len(channels)} channels and saved to channels.csv")
 else:
     print("No channels found")
-
-
-# In[ ]:
-
-
-
-
